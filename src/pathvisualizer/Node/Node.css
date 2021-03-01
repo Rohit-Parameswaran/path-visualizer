@@ -1,0 +1,28 @@
+.node {
+  width: 3.8vh;
+  height: 3.8vh;
+  border: 1px solid #111111;
+}
+
+.startnode {
+  background-color: rgb(90, 90, 207);
+}
+
+.finishnode {
+  background-color: red;
+}
+
+.wallnode {
+  background-color: #111111;
+  transition: cubic-bezier(1, 0, 0, 1);
+}
+
+.node-visited {
+  background-color: rgba(36, 136, 230, 0.685);
+  transition: ease-in-out 0.5s;
+}
+
+.node-path {
+  background-color: rgba(255, 255, 5, 0.637);
+}
+

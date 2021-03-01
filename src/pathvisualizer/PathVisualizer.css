@@ -1,0 +1,27 @@
+.button-container {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.visualize-button {
+  background-color: black;
+  margin: 0 auto;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid #ffffff;
+  border-radius: 0.3em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+  transition: all 0.5s;
+}
+
+.visualize-button:hover {
+  color: #000000;
+  background-color: #ffffff;
+  cursor: pointer;
+  border: 1px solid black;
+}
