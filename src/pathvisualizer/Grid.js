@@ -28,7 +28,9 @@ export default class Grid extends Component {
                         handleMouseDown={(row, col) =>
                           this.props.handleMouseDown(row, col)
                         }
-                        handleMouseUp={this.props.handleMouseUp}
+                        handleMouseUp={(row, col) =>
+                          this.props.handleMouseUp(row, col)
+                        }
                         handleMouseEnter={(row, col) =>
                           this.props.handleMouseEnter(row, col)
                         }

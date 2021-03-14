@@ -22,7 +22,7 @@ export class Node extends Component {
         className={`node ${startEndOrWall}`}
         onMouseDown={() => this.props.handleMouseDown(row, col)}
         onMouseEnter={() => this.props.handleMouseEnter(row, col)}
-        onMouseUp={this.props.handleMouseUp}
+        onMouseUp={() => this.props.handleMouseUp(row, col)}
       ></td>
     );
   }

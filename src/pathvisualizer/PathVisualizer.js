@@ -5,10 +5,10 @@ import { dijkstras, getRequiredPath } from "../algorithms/dijkstras";
 
 import "./PathVisualizer.css";
 
-const startRow = 2;
-const startCol = 11;
-const endRow = 10;
-const endCol = 36;
+let startRow = 2;
+let startCol = 11;
+let endRow = 10;
+let endCol = 36;
 
 export default class PathVisualizer extends Component {
   constructor(props) {
@@ -16,6 +16,7 @@ export default class PathVisualizer extends Component {
     this.state = {
       grid: [],
       isMouseActive: false,
+      selectedNode: "",
     };
   }
 
@@ -23,6 +24,11 @@ export default class PathVisualizer extends Component {
     const nodes = startingGrid();
     this.setState({ grid: nodes });
   }
+
+  // componentDidUpdate() {
+  //   const nodes = startingGrid();
+  //   this.setState({ grid: nodes });
+  // }
 
   animateShortestPath(requiredPath) {
     for (let i = 0; i < requiredPath.length; ++i) {
@@ -58,24 +64,54 @@ export default class PathVisualizer extends Component {
     const destNode = grid[endRow][endCol];
     const visitedNodesInOrder = dijkstras(srcNode, destNode, grid);
     const requiredPath = getRequiredPath(destNode);
+    console.log(requiredPath);
     this.animateDijkstras(visitedNodesInOrder, requiredPath);
   };
 
+  changeStartorEnd = (row, col, startOrEnd) => {
+    const tempGrid = this.state.grid.slice();
+    if (startOrEnd === "start") {
+      tempGrid[startRow][startCol].isStart = false;
+      startRow = row;
+      startCol = col;
+      tempGrid[startRow][startCol].isStart = true;
+    } else if (startOrEnd === "end") {
+      tempGrid[endRow][endCol].isFinish = false;
+      endRow = row;
+      endCol = col;
+      tempGrid[endRow][endCol].isFinish = true;
+    }
+
+    tempGrid[row][col].isWall = false;
+    this.setState({ grid: tempGrid });
+  };
+
   handleMouseDown = (row, col) => {
-    const newGrid = getGridWithNewWalls(this.state.grid, row, col);
-    this.setState({
-      grid: newGrid,
-      isMouseActive: true,
-    });
+    this.setState({ isMouseActive: true });
+    if (row == startRow && col == startCol) {
+      this.setState({ selectedNode: "start" }); //start node is selected
+    } else if (row == endRow && col == endCol) {
+      this.setState({ selectedNode: "end" }); //destination node is selected
+    } else {
+      this.setState({ selectedNode: "wall" }); //normal node(wall / available node) is selected
+
+      const newGrid = getGridWithNewWalls(this.state.grid, row, col);
+      this.setState({
+        grid: newGrid,
+      });
+    }
   };
 
   handleMouseEnter = (row, col) => {
     if (!this.state.isMouseActive) return;
-    this.setState({ grid: getGridWithNewWalls(this.state.grid, row, col) });
+    if (this.state.selectedNode != "wall")
+      this.changeStartorEnd(row, col, this.state.selectedNode);
+    else if (this.state.selectedNode == "wall")
+      this.setState({ grid: getGridWithNewWalls(this.state.grid, row, col) });
   };
 
-  handleMouseUp = () => {
-    this.setState({ isMouseActive: false });
+  handleMouseUp = (row, col) => {
+    this.setState({ isMouseActive: false, selectedNode: "" });
   };
 
   resetGrid = () => {
@@ -114,7 +150,7 @@ export default class PathVisualizer extends Component {
         <Grid
           gridNodes={this.state.grid}
           handleMouseDown={(row, col) => this.handleMouseDown(row, col)}
-          handleMouseUp={this.handleMouseUp}
+          handleMouseUp={(row, col) => this.handleMouseUp(row, col)}
           handleMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
         />
         {visualizebuttonMarkup}
