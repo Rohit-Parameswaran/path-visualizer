@@ -7,7 +7,7 @@ export function dijkstras(sourceNode, destinationNode, grid) {
     sortNodesByDistance(unvisitedNodes); // should be replaced by a min heap
     const closestNode = unvisitedNodes.shift(); // removes and returns current 0th element
 
-    if (closestNode.isWall) continue; // do nothing if closestNode is a wall
+    if (closestNode.isWall && closestNode !== destinationNode) continue; // do nothing if closestNode is a wall
     if (closestNode.distance === Infinity) return visitedNodesInOrder;
     // if closestNode is at a distance of Infinity, it means that we are trapped
     closestNode.isVisited = true;
@@ -22,6 +22,7 @@ function getAllNodes(grid) {
   for (let row of grid) {
     for (let node of row) {
       node.distance = Infinity;
+      node.isVisited = false;
       allNodes.push(node);
     }
   }

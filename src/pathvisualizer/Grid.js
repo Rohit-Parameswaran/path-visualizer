@@ -12,7 +12,6 @@ export default class Grid extends Component {
 
   render() {
     const grid = this.props.gridNodes;
-
     return (
       <div>
         <table className="grid">

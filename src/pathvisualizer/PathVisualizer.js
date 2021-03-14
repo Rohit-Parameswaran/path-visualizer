@@ -46,7 +46,7 @@ export default class PathVisualizer extends Component {
         setTimeout(() => {
           this.animateShortestPath(requiredPath);
         }, 10 * i);
-        return;
+        break;
       }
       setTimeout(() => {
         const currentNode = visitedNodesInOrder[i];
@@ -55,6 +55,7 @@ export default class PathVisualizer extends Component {
         ).className = "node node-visited";
       }, 10 * i);
     }
+    console.log("animation done");
   }
 
   visualizeDijkstras = () => {
@@ -62,6 +63,7 @@ export default class PathVisualizer extends Component {
     const grid = this.state.grid;
     const srcNode = grid[startRow][startCol];
     const destNode = grid[endRow][endCol];
+    this.resetGrid(false);
     const visitedNodesInOrder = dijkstras(srcNode, destNode, grid);
     const requiredPath = getRequiredPath(destNode);
     console.log(requiredPath);
@@ -82,7 +84,6 @@ export default class PathVisualizer extends Component {
       tempGrid[endRow][endCol].isFinish = true;
     }
 
-    tempGrid[row][col].isWall = false;
     this.setState({ grid: tempGrid });
   };
 
@@ -114,13 +115,20 @@ export default class PathVisualizer extends Component {
     this.setState({ isMouseActive: false, selectedNode: "" });
   };
 
-  resetGrid = () => {
+  resetGrid = (countWall) => {
     const tempGrid = this.state.grid.slice();
     tempGrid.map((row) => {
       row.map((node) => {
-        node.isWall = false;
+        if (countWall) node.isWall = false;
         node.isVisited = false;
         node.previousNode = null;
+        const reqNode = document.getElementById(`node-${node.row}-${node.col}`);
+        reqNode.className = "node";
+        if (node.row == startRow && node.col == startCol)
+          reqNode.className += " startnode";
+        else if (node.row == endRow && node.col == endCol)
+          reqNode.className += " finishnode";
+        else if (node.isWall && !countWall) reqNode.className += " wallnode";
       });
     });
     this.setState({ grid: tempGrid });
@@ -139,7 +147,10 @@ export default class PathVisualizer extends Component {
     //button for resetting grid
     const resetButtonMarkup = (
       <div className="button-container">
-        <button className="visualize-button" onClick={this.resetGrid}>
+        <button
+          className="visualize-button"
+          onClick={() => this.resetGrid(true)}
+        >
           Reset Grid
         </button>
       </div>
